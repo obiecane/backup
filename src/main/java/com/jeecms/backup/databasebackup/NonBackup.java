@@ -2,6 +2,7 @@ package com.jeecms.backup.databasebackup;
 
 /**
  * 啥都不干的
+ *
  * @author Zhu Kaixiao
  * @version 1.0
  * @date 2019/7/30 14:53
@@ -18,7 +19,7 @@ public class NonBackup extends AbstractDatabaseBackup {
     @Override
     public boolean doRecovery() {
         // do nothing
-        return true;
+        return false;
     }
 
     @Override

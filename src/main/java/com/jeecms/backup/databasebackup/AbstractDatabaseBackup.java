@@ -1,11 +1,11 @@
 package com.jeecms.backup.databasebackup;
 
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.net.URI;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,6 +17,7 @@ import java.sql.SQLException;
  * @copyright 江西金磊科技发展有限公司 All rights reserved. Notice
  * 仅限于授权后使用，禁止非授权传阅以及私自用于商业目的。
  */
+@Slf4j
 public abstract class AbstractDatabaseBackup implements Backup {
 
     @Setter
@@ -26,17 +27,22 @@ public abstract class AbstractDatabaseBackup implements Backup {
     @Override
     public String backup() {
         beforeBackup();
-        return doBackup();
+        String backup = doBackup();
+        log.info("备份{}: {}", backup == null ? "失败" : "成功", backupConfig);
+        return backup;
     }
 
     @Override
     public boolean recovery() {
         beforeRecovery();
-        return doRecovery();
+        boolean success = doRecovery();
+        log.info("还原{}: {}", success ? "成功" : "失败", backupConfig);
+        return success;
     }
 
     /**
      * 通用前置操作
+     *
      * @author Zhu Kaixiao
      * @date 2019/8/1 17:21
      **/
@@ -52,6 +58,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
 
     /**
      * 备份前置操作
+     *
      * @author Zhu Kaixiao
      * @date 2019/7/30 16:49
      **/
@@ -59,10 +66,12 @@ public abstract class AbstractDatabaseBackup implements Backup {
         // 自动生成保存路径
         if (StringUtils.isBlank(backupConfig.getDataSavePath())) {
             try {
-                URI uri = this.getClass().getClassLoader().getResource(".").toURI();
-                File dir = new File(uri);
-                backupConfig.setDataSavePath(dir.getCanonicalPath() + File.separator + System.currentTimeMillis() + ".jcbak");
-            } catch (Exception ignore) { }
+                File dir = new File("./");
+                String filename = backupConfig.getDatabaseName() + "_" + backupConfig.getUsername() + "_" + System.currentTimeMillis();
+                backupConfig.setDataSavePath(dir.getCanonicalPath() + File.separator + "database-backup" + File.separator + filename + ".jcbak");
+            } catch (Exception e) {
+                log.error("自动生成保存路径失败", e);
+            }
         } else {
             // 保存路径的扩展名只能是.jcbak或.sql
             String savePath = backupConfig.getDataSavePath();
@@ -72,11 +81,18 @@ public abstract class AbstractDatabaseBackup implements Backup {
                 backupConfig.setDataSavePath(savePath);
             }
         }
+
+        File parentDir = new File(backupConfig.getDataSavePath()).getParentFile();
+        if (!parentDir.exists()) {
+            parentDir.mkdirs();
+        }
+
         before();
     }
 
     /**
      * 还原前置操作
+     *
      * @author Zhu Kaixiao
      * @date 2019/7/30 16:49
      **/
@@ -90,6 +106,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
 
     /**
      * 进行数据库备份操作
+     *
      * @return String 备份文件所在路径
      * @author Zhu Kaixiao
      * @date 2019/7/30 16:49
@@ -98,6 +115,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
 
     /**
      * 进行数据库还原操作
+     *
      * @return boolean 是否还原成功
      * @author Zhu Kaixiao
      * @date 2019/8/1 17:22
@@ -105,7 +123,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
     protected abstract boolean doRecovery();
 
 
-    protected static synchronized Connection getConnection(String driverClassName, String url, String user, String passwd){
+    protected static synchronized Connection getConnection(String driverClassName, String url, String user, String passwd) {
         Connection conn;
         try {
             Class.forName(driverClassName);

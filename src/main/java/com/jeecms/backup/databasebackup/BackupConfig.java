@@ -1,5 +1,6 @@
 package com.jeecms.backup.databasebackup;
 
+import com.jeecms.backup.entity.BackupDto;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -7,7 +8,6 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
 /**
  * @author Zhu Kaixiao
@@ -26,19 +26,33 @@ public class BackupConfig {
     public static final int DB_TYPE_ORACLE = 3;
     public static final int DB_TYPE_UNKNOWN = 9999;
 
-    /** 数据库类型 */
+    /**
+     * 数据库类型
+     */
     private Integer databaseType;
-    /** 数据库名, 如果是oracle则是oracle的实例名 */
+    /**
+     * 数据库名, 如果是oracle则是oracle的实例名或服务名
+     */
     private String databaseName;
-    /** 主机 */
+    /**
+     * 主机
+     */
     private String host;
-    /** 端口 */
+    /**
+     * 端口
+     */
     private Integer port;
-    /** 用户名 */
+    /**
+     * 用户名
+     */
     private String username;
-    /** 密码 */
+    /**
+     * 密码
+     */
     private String password;
-    /** 数据保存路径 */
+    /**
+     * 数据保存路径
+     */
     private String dataSavePath;
 
     @Setter(AccessLevel.PRIVATE)
@@ -47,52 +61,31 @@ public class BackupConfig {
 //    private String logSavePath;
 
 
-    /** oracle数据库备份时指定用户的表空间 */
-    private String oracleOwner;
-
-
-    // ---------------------  腾讯云, 阿里云  ---------------------
-    /** 个人秘钥 */
-    private String secretId;
-    /** 个人秘钥 */
-    private String secretKey;
-    /** 地区 */
-    private String region;
-    /** 数据库实例id */
-    private String instanceId;
-
-    // ---------------------  阿里云  ---------------------
-//    private String accessKeyId;
-//    /** 个人秘钥 */
-//    private String accessSecret;
-//    /** 地区 */
-//    private String regionId;
-//    /** 数据库实例id */
-//    private String DBInstanceId;
-
 
     public static BackupConfig newInstance() {
         return new BackupConfig();
     }
 
-    public static BackupConfig of(DataSourceProperties dataSourceProperties) {
-        BackupConfig backupConfig = new BackupConfig();
+    public static BackupConfig of(BackupDto dto) {
+        BackupConfig backupConfig = newInstance();
         // 提取host port
-        String jdbcurl = dataSourceProperties.getUrl();
+        String jdbcurl = dto.getJdbcUrl();
         int dbType = resolveDataTypeFromJdbcUrl(jdbcurl);
         if (dbType == DB_TYPE_MYSQL) {
             resolveMysqlUrl(jdbcurl, backupConfig);
         } else if (dbType == DB_TYPE_SQL_SERVER) {
-            resolveSqlServerUrl(jdbcurl,backupConfig);
+            resolveSqlServerUrl(jdbcurl, backupConfig);
         } else if (dbType == DB_TYPE_ORACLE) {
-            resolveOracleUrl(jdbcurl,backupConfig);
+            resolveOracleUrl(jdbcurl, backupConfig);
         }
-        String username = dataSourceProperties.getUsername();
-        String password = dataSourceProperties.getPassword();
+        String username = dto.getUsername();
+        String password = dto.getPassword();
+        String bakFilePath = dto.getBakFilePath();
         backupConfig.setUsername(username);
         backupConfig.setPassword(password);
         backupConfig.setDatabaseType(dbType);
         backupConfig.setJdbcUrl(jdbcurl);
+        backupConfig.setDataSavePath(bakFilePath);
         return backupConfig;
     }
 
@@ -148,7 +141,8 @@ public class BackupConfig {
 
         String dbName = null;
         for (String s : tmp.split(";")) {
-            if (s.toLowerCase().startsWith("database=")) {
+            s = s.toLowerCase();
+            if (s.startsWith("database=") || s.startsWith("databasename=")) {
                 dbName = s.split("=")[1];
             }
         }
@@ -165,8 +159,9 @@ public class BackupConfig {
         String dbName;
         String host = StringUtils.substringBefore(tmp, ":");
         tmp = StringUtils.substringAfter(tmp, ":");
-        if (tmp.contains(":")) {
-            String[] sp = tmp.split(":");
+        // 实例名以:分隔, 服务名以/分隔
+        if (tmp.contains(":") || tmp.contains("/")) {
+            String[] sp = tmp.split("[:/]");
             port = Integer.valueOf(sp[0]);
             dbName = sp[1];
         } else {
@@ -177,7 +172,6 @@ public class BackupConfig {
         backupConfig.setPort(port);
         backupConfig.setDatabaseName(dbName);
     }
-
 
 
     public int getPort() {

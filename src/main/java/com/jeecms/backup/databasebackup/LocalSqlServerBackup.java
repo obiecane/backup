@@ -1,5 +1,6 @@
 package com.jeecms.backup.databasebackup;
 
+import com.jeecms.backup.exception.BackupException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -8,6 +9,7 @@ import java.util.Objects;
 
 /**
  * 本地Sql Server数据库备份还原
+ *
  * @author Zhu Kaixiao
  * @version 1.0
  * @date 2019/7/31 9:20
@@ -25,6 +27,7 @@ public class LocalSqlServerBackup extends AbstractDatabaseBackup {
      * BACKUP DATABASE zkx_backup_test TO DISK='D:\2.bak'
      * 备份生成的bak文件在db服务器上, 而不是在当前应用服务器上
      * T-SQL备份详细资料: https://docs.microsoft.com/zh-cn/sql/t-sql/statements/backup-transact-sql?view=sql-server-2017
+     *
      * @author Zhu Kaixiao
      * @date 2019/7/31 9:35
      **/
@@ -38,19 +41,20 @@ public class LocalSqlServerBackup extends AbstractDatabaseBackup {
             Statement statement = connection.createStatement();
             statement.execute(tSql);
             log.info("数据库[{}]备份成功, 备份文件路径:[{}]", backupConfig.getDatabaseName(), backupConfig.getDataSavePath());
-            return null;
+            return backupConfig.getDataSavePath();
         } catch (Exception e) {
             log.error("数据库[{}]备份失败!\t{}", backupConfig.getDatabaseName(), e.getMessage());
-            return null;
+            throw dressException(e);
         }
     }
 
     /**
      * 通过T-SQL还原, 调用该方法将会指定数据库上的所有用户链接,并回滚事务
      * 因为在还原数据库时,需要获得对数据库的独占访问权
-     *
+     * <p>
      * 目前只支持还原全量备份
      * RESTORE DATABASE参考资料: https://docs.microsoft.com/zh-cn/sql/t-sql/statements/restore-statements-transact-sql?view=sql-server-2017
+     *
      * @author Zhu Kaixiao
      * @date 2019/7/31 11:18
      **/
@@ -69,7 +73,7 @@ public class LocalSqlServerBackup extends AbstractDatabaseBackup {
             } catch (Exception e) {
                 // 如果是数据库不存在, 忽略异常
                 if (!e.getMessage().contains("数据库不存在")) {
-                    throw e;
+                    throw dressException(e);
                 }
             }
 
@@ -82,10 +86,9 @@ public class LocalSqlServerBackup extends AbstractDatabaseBackup {
             return true;
         } catch (Exception e) {
             log.error("数据库[{}]还原失败!\t{}", backupConfig.getDatabaseName(), e.getMessage());
-            return false;
+            throw dressException(e);
         }
     }
-
 
     @Override
     protected void before() {
@@ -94,20 +97,19 @@ public class LocalSqlServerBackup extends AbstractDatabaseBackup {
     }
 
 
+    private BackupException dressException(Exception e) {
+        Throwable cause = e.getCause();
+        cause = cause == null ? e : cause;
+        String msg;
+        if (cause.getMessage().toLowerCase().contains("connection timed out")) {
+            msg = "数据库连接超时";
+        } else {
+            msg = cause.getMessage().split("ClientConnectionId:")[0];
+        }
+        return new BackupException(msg);
+    }
+
     private String jdbcUrl() {
         return String.format("jdbc:sqlserver://%s:%d;database=master;", backupConfig.getHost(), backupConfig.getPort());
     }
-//    /**
-//     * 初始化数据源
-//     * @author Zhu Kaixiao
-//     * @date 2019/7/31 11:22
-//     **/
-//    private void initDataSource() {
-//        dataSource = DataSourceBuilder.create()
-//                .driverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver")
-//                .url(String.format("jdbc:sqlserver://%s:%d;database=master;", backupConfig.getHost(), backupConfig.getPort()))
-//                .username(backupConfig.getUsername())
-//                .password(backupConfig.getPassword())
-//                .build();
-//    }
 }

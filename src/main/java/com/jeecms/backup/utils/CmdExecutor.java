@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -19,6 +18,7 @@ import java.util.List;
 /**
  * 命令行执行器
  * 线程安全性未测试
+ *
  * @author Zhu Kaixiao
  * @version 1.0
  * @date 2019/7/30 13:58
@@ -26,18 +26,7 @@ import java.util.List;
  * 仅限于授权后使用，禁止非授权传阅以及私自用于商业目的。
  */
 @Slf4j
-public class CmdExcutor {
-
-
-
-    public static void main(String[] args) throws IOException {
-//        String cmd = "mysqldump -h127.0.0.1 -uroot -p123456 test >\"D:/13211.sql\"";
-//        executeCommand(Arrays.asList(cmd.split(" ")));
-
-        String p = "c:\\dd\\a";
-        String fullPath = FilenameUtils.getPath(p);
-        System.out.println(fullPath);
-    }
+public class CmdExecutor {
 
     /**
      * 执行命令
@@ -70,7 +59,7 @@ public class CmdExcutor {
                 log.error("不支持的操作系统: [{}]", osName);
         }
 
-        cmds.addAll(commonds);
+        cmds.add(cmdStr);
         // 设置程序所在路径
         log.debug(" 待执行的指令为：[{}]", cmdStr);
 
@@ -97,7 +86,7 @@ public class CmdExcutor {
             return new CmdResult(pr, inputStream.stringBuffer.toString(), errorStream.stringBuffer.toString());
         } catch (Exception e) {
             log.error("命令执行出错！  出错信息： {}", e.getMessage());
-            return new CmdResult(-1, "", "");
+            return null;
         } finally {
             if (null != process) {
                 ProcessKiller killer = new ProcessKiller(process);

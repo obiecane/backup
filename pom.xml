@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.jeecms</groupId>
-    <artifactId>backup</artifactId>
+    <artifactId>jeecms-backup</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backup</name>
+    <name>jeecms-backup</name>
     <description>数据库备份</description>
 
     <properties>
@@ -24,21 +24,15 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
@@ -49,6 +43,13 @@
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!--        mvn install:install-file -Dfile=src\main\resources\libs\ojdbc14.jar -DgroupId=com.oracle -DartifactId=ojdbc11g -Dversion=11.g -Dpackaging=jar-->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc11g</artifactId>
+            <version>11.g</version>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -60,24 +61,24 @@
             <scope>test</scope>
         </dependency>
 
-        <!--阿里云开发套件-->
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-rds</artifactId>
-            <version>${aliyun-java-sdk-rds.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>${aliyun-java-sdk-core.version}</version>
-        </dependency>
+        <!--        &lt;!&ndash;阿里云开发套件&ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.aliyun</groupId>-->
+        <!--            <artifactId>aliyun-java-sdk-rds</artifactId>-->
+        <!--            <version>${aliyun-java-sdk-rds.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.aliyun</groupId>-->
+        <!--            <artifactId>aliyun-java-sdk-core</artifactId>-->
+        <!--            <version>${aliyun-java-sdk-core.version}</version>-->
+        <!--        </dependency>-->
 
-        <!--腾讯云开发套件-->
-        <dependency>
-            <groupId>com.tencentcloudapi</groupId>
-            <artifactId>tencentcloud-sdk-java</artifactId>
-            <version>${tencentcloud-sdk-java.version}</version>
-        </dependency>
+        <!--        &lt;!&ndash;腾讯云开发套件&ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.tencentcloudapi</groupId>-->
+        <!--            <artifactId>tencentcloud-sdk-java</artifactId>-->
+        <!--            <version>${tencentcloud-sdk-java.version}</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -92,6 +93,15 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${commons-collections4.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.58</version>
         </dependency>
 
 
