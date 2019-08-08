@@ -22,11 +22,9 @@ import static com.jeecms.backup.utils.CmdExecutor.executeCommand;
 /**
  * 本地Oracle数据库备份还原
  *
- * @author Zhu Kaixiao
+ * @author zak
  * @version 1.0
  * @date 2019/7/31 11:39
- * @copyright 江西金磊科技发展有限公司 All rights reserved. Notice
- * 仅限于授权后使用，禁止非授权传阅以及私自用于商业目的。
  */
 @Slf4j
 public class LocalOracleBackup extends AbstractDatabaseBackup {
@@ -44,7 +42,7 @@ public class LocalOracleBackup extends AbstractDatabaseBackup {
      * expdp zkx/123456@127.0.0.1:1251/orcl tables=emp,dept dumpfile=expdp.dmp directory=dump_dir logfile=expdp.log;
      *
      * @return java.lang.String
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/8/5 9:47
      **/
     @Override
@@ -108,7 +106,7 @@ public class LocalOracleBackup extends AbstractDatabaseBackup {
      * 参考命令:
      * impdp zkx/123456@127.0.0.1:1251/orcl schemas=zkx dumpfile=expdp.dmp
      * @return boolean
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/8/5 9:51
      **/
     @Override
@@ -184,7 +182,7 @@ public class LocalOracleBackup extends AbstractDatabaseBackup {
      * 获取oracle中设置的dump文件保存目录
      *
      * @return java.lang.String
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/8/5 9:44
      **/
     private String getDumpDir() {

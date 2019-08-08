@@ -10,11 +10,9 @@ import java.util.Objects;
 /**
  * 本地Sql Server数据库备份还原
  *
- * @author Zhu Kaixiao
+ * @author zak
  * @version 1.0
  * @date 2019/7/31 9:20
- * @copyright 江西金磊科技发展有限公司 All rights reserved. Notice
- * 仅限于授权后使用，禁止非授权传阅以及私自用于商业目的。
  */
 @Slf4j
 public class LocalSqlServerBackup extends AbstractDatabaseBackup {
@@ -28,7 +26,7 @@ public class LocalSqlServerBackup extends AbstractDatabaseBackup {
      * 备份生成的bak文件在db服务器上, 而不是在当前应用服务器上
      * T-SQL备份详细资料: https://docs.microsoft.com/zh-cn/sql/t-sql/statements/backup-transact-sql?view=sql-server-2017
      *
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/7/31 9:35
      **/
     @Override
@@ -55,7 +53,7 @@ public class LocalSqlServerBackup extends AbstractDatabaseBackup {
      * 目前只支持还原全量备份
      * RESTORE DATABASE参考资料: https://docs.microsoft.com/zh-cn/sql/t-sql/statements/restore-statements-transact-sql?view=sql-server-2017
      *
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/7/31 11:18
      **/
     @Override

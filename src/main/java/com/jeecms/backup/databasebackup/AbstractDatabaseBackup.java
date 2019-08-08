@@ -11,11 +11,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * @author Zhu Kaixiao
+ * @author zak
  * @version 1.0
  * @date 2019/7/30 14:42
- * @copyright 江西金磊科技发展有限公司 All rights reserved. Notice
- * 仅限于授权后使用，禁止非授权传阅以及私自用于商业目的。
  */
 @Slf4j
 public abstract class AbstractDatabaseBackup implements Backup {
@@ -43,7 +41,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
     /**
      * 通用前置操作
      *
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/8/1 17:21
      **/
     protected void before() {
@@ -59,7 +57,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
     /**
      * 备份前置操作
      *
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/7/30 16:49
      **/
     private void beforeBackup() {
@@ -93,7 +91,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
     /**
      * 还原前置操作
      *
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/7/30 16:49
      **/
     private void beforeRecovery() {
@@ -108,7 +106,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
      * 进行数据库备份操作
      *
      * @return String 备份文件所在路径
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/7/30 16:49
      **/
     protected abstract String doBackup();
@@ -117,7 +115,7 @@ public abstract class AbstractDatabaseBackup implements Backup {
      * 进行数据库还原操作
      *
      * @return boolean 是否还原成功
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/8/1 17:22
      **/
     protected abstract boolean doRecovery();

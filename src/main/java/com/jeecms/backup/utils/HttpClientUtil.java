@@ -17,10 +17,8 @@ import java.io.IOException;
 /**
  * HttpClient 工具类
  *
- * @author: zhu kaixiao
- * @date: 2019年8月2日 上午17:22:18
- * @Copyright: 江西金磊科技发展有限公司 All rights reserved.Notice
- * 仅限于授权后使用，禁止非授权传阅以及私自用于商业目的。
+ * @author zak
+ * @date 2019年8月2日 上午17:22:18
  */
 @Slf4j
 public class HttpClientUtil {
@@ -32,7 +30,7 @@ public class HttpClientUtil {
      * @param url    url
      * @param params 参数
      * @return java.lang.String
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/8/2 17:23
      **/
     public static <P> String postJson(String url, P params) {

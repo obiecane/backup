@@ -14,11 +14,9 @@ import static com.jeecms.backup.utils.CmdExecutor.executeCommand;
 /**
  * 本地MySql数据库备份还原
  *
- * @author Zhu Kaixiao
+ * @author zak
  * @version 1.0
  * @date 2019/7/30 13:50
- * @copyright 江西金磊科技发展有限公司 All rights reserved. Notice
- * 仅限于授权后使用，禁止非授权传阅以及私自用于商业目的。
  */
 @Slf4j
 public class LocalMysqlBackup extends AbstractDatabaseBackup {
@@ -30,7 +28,7 @@ public class LocalMysqlBackup extends AbstractDatabaseBackup {
      *
      * 导出表的数据及结构
      * mysqldump  databaseName -u username -ppassword --tables table_name1 table_name2 table_name3>D:\db_script.sql
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/7/31 9:11
      **/
     @Override
@@ -82,7 +80,7 @@ public class LocalMysqlBackup extends AbstractDatabaseBackup {
      * 参考恢复命令:
      * mysql -h127.0.0.1 -P3306 -uroot -p123456 jeecms <D:/12580.sql
      *
-     * @author Zhu Kaixiao
+     * @author zak
      * @date 2019/7/31 9:06
      **/
     @Override
