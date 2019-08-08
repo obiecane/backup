@@ -1,0 +1,79 @@
+@echo off
+setlocal enabledelayedexpansion
+
+echo start jeecms-backup...
+
+SET SERVER_NAME=jeecms-backup
+SET pid=none
+call :getpid pid
+
+
+if "%1%" == "status" (
+	if "%pid%" NEQ "none" (
+		echo The %SERVER_NAME% is running...!
+	) else (
+		echo "The %SERVER_NAME% is stopped"
+	)
+
+	goto :exit
+)
+
+if "%pid%" NEQ "none" (
+	echo ERROR: The port 19889 already used!
+	goto :exit
+) 
+
+
+start "" /i /b "javaw" -Dfile.encoding=utf-8 -jar jeecms-backup-0.0.1-SNAPSHOT.jar >./stdout.log 2>&1
+
+
+
+:LoopStart
+call :getpid pid
+if "%pid%" == "none" (
+	set /p="."<nul
+	goto :LoopStart
+) else (
+	set pwd= 
+	call :getPwd pwd
+	echo OK!
+	echo PID: %pid%
+	echo STDOUT: !pwd!\stdout.log
+)
+
+
+:exit
+echo.
+pause
+exit /b 0
+
+
+
+
+
+
+
+:getpid
+for /F "tokens=1,2,3,4,5"  %%i in ('netstat -ano') do ( 
+	::echo _%%i_  _%%j_  _%%k_  _%%l_  _%%m_
+	if "%%j" == "0.0.0.0:19889" (
+		if "%%l" == "LISTENING" (
+			set %1=%%m
+			exit /b 0
+		)
+	)
+)
+exit /b 0
+
+:getPwd
+set pwd_t=1
+for /F "tokens=1,2,3,4,5,6 delims= " %%i in ('dir') do ( 
+	set pwd_t=%%i
+
+	if "!pwd_t:~1,2!" == ":\" (
+		set %1=!pwd_t!
+		exit /b 0
+	)
+	
+)
+exit /b 0

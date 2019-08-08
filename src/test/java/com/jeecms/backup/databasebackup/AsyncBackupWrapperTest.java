@@ -4,8 +4,6 @@ import com.jeecms.backup.entity.BackupDto;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class AsyncBackupWrapperTest {
 
     private AsyncBackupWrapper asyncBackupWrapper;
@@ -31,7 +29,7 @@ public class AsyncBackupWrapperTest {
     @Test
     public void backup() {
 
-        asyncBackupWrapper.backup(backuper, (bakFilePath, errMsg) ->{
+        asyncBackupWrapper.backup(backuper, (bakFilePath, errMsg) -> {
             System.out.println("异步备份完成, bakFilePath:" + bakFilePath + "   errMsg:" + errMsg);
             syncFlg = false;
         });

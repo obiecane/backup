@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,9 +36,17 @@ public class CmdExecutor {
     public static CmdResult executeCommand(List<String> commonds) {
         if (CollectionUtils.isEmpty(commonds)) {
             log.error(" 指令执行失败，因为要执行的指令为空！ ");
-            return new CmdResult(-1, "", "指令执行失败，因为要执行的指令为空！");
+            return null;
         }
         String cmdStr = StringUtils.join(commonds, " ");
+        return executeCommand(cmdStr);
+    }
+
+    public static CmdResult executeCommand(String cmd) {
+        if (StringUtils.isBlank(cmd)) {
+            log.error(" 指令执行失败，因为要执行的指令为空！ ");
+            return null;
+        }
         LinkedList<String> cmds = new LinkedList<>();
         String osName = System.getProperty("os.name");
         // 如果第一个不是cmd, 那么创建的进程将是直接调用其他程序, 而不是调用cmd
@@ -59,9 +66,9 @@ public class CmdExecutor {
                 log.error("不支持的操作系统: [{}]", osName);
         }
 
-        cmds.add(cmdStr);
+        cmds.add(cmd);
         // 设置程序所在路径
-        log.debug(" 待执行的指令为：[{}]", cmdStr);
+        log.debug(" 待执行的指令为：[{}]", cmd);
 
         Runtime runtime = Runtime.getRuntime();
         Process process = null;
@@ -82,7 +89,7 @@ public class CmdExecutor {
 
             // 输出执行的命令信息
             String resultStr = pr == 0 ? "正常" : "异常";
-            log.debug("已执行的命令：[{}]   已执行完毕,执行结果：[{}]", cmdStr, resultStr);
+            log.debug("已执行的命令：[{}]   已执行完毕,执行结果：[{}]", cmd, resultStr);
             return new CmdResult(pr, inputStream.stringBuffer.toString(), errorStream.stringBuffer.toString());
         } catch (Exception e) {
             log.error("命令执行出错！  出错信息： {}", e.getMessage());
@@ -96,10 +103,6 @@ public class CmdExecutor {
         }
     }
 
-    public static CmdResult executeCommand(String cmd) {
-        return executeCommand(Arrays.asList(cmd.split(" ")));
-    }
-
 
     /**
      * 在程序退出前结束已有的进程
@@ -108,7 +111,7 @@ public class CmdExecutor {
     private static class ProcessKiller extends Thread {
         private Process process;
 
-        public ProcessKiller(Process process) {
+        ProcessKiller(Process process) {
             this.process = process;
         }
 
@@ -129,7 +132,7 @@ public class CmdExecutor {
         BufferedReader bufferedReader;
         StringBuffer stringBuffer;
 
-        public PrintStream(InputStream inputStream) {
+        PrintStream(InputStream inputStream) {
             this.inputStream = inputStream;
         }
 
@@ -139,10 +142,7 @@ public class CmdExecutor {
                 if (null == inputStream) {
                     log.error(" 读取输出流出错！因为当前输出流为空！");
                 }
-                String charsetName = "UTF-8";
-                if (OSUtil.currentPlatform() == OSUtil.PLATFORM_WINDOWS) {
-                    charsetName = "GBK";
-                }
+                String charsetName = OSUtil.platformCharsetName();
                 bufferedReader = new BufferedReader(new InputStreamReader(inputStream, charsetName));
                 String line;
                 stringBuffer = new StringBuffer();

@@ -33,7 +33,7 @@ public class BackupServices {
         Backup backuper = DatabaseBackuperFactory.createBackuper(backupConfig);
         asyncBackupWrapper.backup(backuper, (bakFilePath, errMsg) -> {
             bakFilePath = Optional.ofNullable(bakFilePath).map(s -> s.replaceAll("\\\\", "/")).orElse(null);
-            log.debug("备份回调-> bakFilePath:[{}], errMsg:[{}]", bakFilePath, errMsg);
+            log.info("备份回调-> bakFilePath:[{}], errMsg:[{}]", bakFilePath, errMsg);
             Map<String, Object> p = new HashMap<>(4);
             p.put("backupId", dto.getBackupId());
             p.put("success", bakFilePath != null);
@@ -48,7 +48,7 @@ public class BackupServices {
         BackupConfig backupConfig = BackupConfig.of(dto);
         Backup backuper = DatabaseBackuperFactory.createBackuper(backupConfig);
         asyncBackupWrapper.recovery(backuper, (success, errMsg) -> {
-            log.debug("还原回调-> success:[{}], errMsg:[{}]", success, errMsg);
+            log.info("还原回调-> success:[{}], errMsg:[{}]", success, errMsg);
             Map<String, Object> p = new HashMap<>(3);
             p.put("backupId", dto.getBackupId());
             p.put("success", success);

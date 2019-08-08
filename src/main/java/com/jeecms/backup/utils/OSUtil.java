@@ -1,5 +1,7 @@
 package com.jeecms.backup.utils;
 
+import java.nio.charset.Charset;
+
 /**
  * @author Zhu Kaixiao
  * @version 1.0
@@ -28,5 +30,17 @@ public class OSUtil {
             return PLATFORM_MAC;
         }
         return PLATFORM_UNKNOWN;
+    }
+
+    public static String platformCharsetName() {
+        String charsetName = "UTF-8";
+        if (OSUtil.currentPlatform() == OSUtil.PLATFORM_WINDOWS) {
+            charsetName = "GBK";
+        }
+        return charsetName;
+    }
+
+    public static Charset platformCharset() {
+        return Charset.forName(platformCharsetName());
     }
 }

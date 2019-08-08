@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BackupException.class)
     public Map exceptionHandler(BackupException e) {
-        log.error("内部错误", e);
+        log.error("内部错误: {}", e.getMessage());
         Map<String, Object> map = new HashMap<>(3);
         map.put("status", 400);
         map.put("message", e.getMessage());
