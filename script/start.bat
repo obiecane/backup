@@ -1,6 +1,15 @@
 @echo off
 setlocal enabledelayedexpansion
 
+
+set YEAR=%date:~0,4%
+set MOUTH=%date:~5,2%
+set DAY=%date:~8,2%
+set HOUR=%time:~0,2%
+set MINUTE=%time:~3,2%
+set SECOUND=%time:~6,2%
+
+
 echo start jeecms-backup...
 
 SET SERVER_NAME=jeecms-backup
@@ -10,21 +19,21 @@ call :getpid pid
 
 if "%1%" == "status" (
 	if "%pid%" NEQ "none" (
-		echo The %SERVER_NAME% is running...!
+		echo The %SERVER_NAME% is running
 	) else (
-		echo "The %SERVER_NAME% is stopped"
+		echo The %SERVER_NAME% is stopped
 	)
 
 	goto :exit
 )
 
 if "%pid%" NEQ "none" (
-	echo ERROR: The port 19889 already used!
+	echo ERROR: The port 19889 already used^^!
 	goto :exit
 ) 
 
-
-start "" /i /b "javaw" -Dfile.encoding=utf-8 -jar jeecms-backup-0.0.1-SNAPSHOT.jar >./stdout.log 2>&1
+set logname=%YEAR%_%MOUTH%_%DAY%_%HOUR%_%MINUTE%_%SECOUND%.log
+start "" /i /b "javaw" -Dfile.encoding=utf-8 -jar jeecms-backup-0.0.1-SNAPSHOT.jar >./%logname% 2>&1
 
 
 
@@ -36,9 +45,9 @@ if "%pid%" == "none" (
 ) else (
 	set pwd= 
 	call :getPwd pwd
-	echo OK!
+	echo OK^^!
 	echo PID: %pid%
-	echo STDOUT: !pwd!\stdout.log
+	echo STDOUT: !pwd!\%logname%
 )
 
 
@@ -67,13 +76,12 @@ exit /b 0
 
 :getPwd
 set pwd_t=1
-for /F "tokens=1,2,3,4,5,6 delims= " %%i in ('dir') do ( 
+for /F "tokens=1 delims= " %%i in ('dir') do ( 
 	set pwd_t=%%i
 
 	if "!pwd_t:~1,2!" == ":\" (
 		set %1=!pwd_t!
 		exit /b 0
 	)
-	
 )
 exit /b 0

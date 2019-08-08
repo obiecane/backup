@@ -40,7 +40,8 @@ LOGS_DIR=$DEPLOY_DIR
 if [ ! -d $LOGS_DIR ]; then
   mkdir $LOGS_DIR
 fi
-STDOUT_FILE=$LOGS_DIR/stdout.log
+
+STDOUT_FILE=$LOGS_DIR/`date +%Y_%m_%d_%H_%M_%S`.log
 JAVA_OPTS=" -Djava.awt.headless=true -Djava.net.preferIPv4Stack=true "
 
 

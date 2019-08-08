@@ -1,5 +1,5 @@
 ﻿IP白名单配置:
-    在application.properties中配置backup.ip-whitelist, 多个IP以逗号分隔
+    在application.properties中增加backup.ip-whitelist配置项, 多个IP以逗号分隔
     例如:
         backup.ip-whitelist=127.0.0.1,0:0:0:0:0:0:0:1,192.168.0.174
 
