@@ -8,10 +8,10 @@
         <version>2.1.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.jeecms</groupId>
-    <artifactId>jeecms-backup</artifactId>
+    <groupId>com.zak</groupId>
+    <artifactId>zak-backup</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>jeecms-backup</name>
+    <name>zak-backup</name>
     <description>数据库备份</description>
 
     <properties>
